@@ -3,7 +3,6 @@ import math
 # Constantes físicas
 h = 6.626e-34  # Constante de Planck (J·s)
 c = 3.0e8  # Velocidade da luz no vácuo (m/s)
-eV = 1.602e-19  # 1 eV = 1.602 × 10^−19 J (ainda usada para conversão se necessário)
 R_H = 2.18e-18  # Constante de Rydberg (J)
 e_charge = 1.60217662e-19  # Carga do elétron (C)
 epsilon_0 = 8.854e-12  # Constante de permissividade do vácuo (F/m)
@@ -58,13 +57,35 @@ def photon_energy(n_inicial, n_final):
     print(f"Frequência do fóton (f_foton): {f_foton:.4e} Hz")
     print(f"Comprimento de onda do fóton (λ_foton): {lambda_foton:.4e} m")
 
-def unit_conversion():
+# Função para encontrar n final ou n inicial dado f_foton ou λ_foton
+def transition_with_photon(n_inicial=None, n_final=None, f_foton=None, lambda_foton=None):
+    if f_foton:
+        E_foton_joules = h * f_foton
+    elif lambda_foton:
+        f_foton = c / lambda_foton
+        E_foton_joules = h * f_foton
+    else:
+        print("É necessário fornecer f_foton ou λ_foton.")
+        return
+
+    if n_inicial:
+        E_n_inicial = R_H / n_inicial**2
+        E_n_final = E_n_inicial - E_foton_joules
+        n_final = math.sqrt(R_H / E_n_final)
+        print(f"Estado final (n_final): {n_final:.2f} (decimal) ou {round(n_final)} (inteiro)")
+    
+    elif n_final:
+        E_n_final = R_H / n_final**2
+        E_n_inicial = E_n_final + E_foton_joules
+        n_inicial = math.sqrt(R_H / E_n_inicial)
+        print(f"Estado inicial (n_inicial): {n_inicial:.2f} (decimal) ou {round(n_inicial)} (inteiro)")
+
+# Função de conversão de unidades
+def conversor_de_unidades():
     while True:
         print("\nEscolha a conversão que deseja realizar:")
         print("1 - Metros para Nanômetros (m -> nm)")
         print("2 - Nanômetros para Metros (nm -> m)")
-        print("3 - Joules para eV (J -> eV)")
-        print("4 - eV para Joules (eV -> J)")
         print("5 - Hz para THz")
         print("6 - THz para Hz")
         print("0 - Sair da Conversão de unidades")
@@ -79,16 +100,6 @@ def unit_conversion():
             nm = float(input("Digite o valor em nanômetros: "))
             metros = nm / 1e9
             print(f"{nm:.4e} nanômetros = {metros:.4e} metros")
-        
-        elif opcao_conv == 3:
-            joules = float(input("Digite o valor em Joules: "))
-            ev = joules / eV
-            print(f"{joules:.4e} Joules = {ev:.4e} eV")
-        
-        elif opcao_conv == 4:
-            ev = float(input("Digite o valor em eV: "))
-            joules = ev * eV
-            print(f"{ev:.4e} eV = {joules:.4e} Joules")
         
         elif opcao_conv == 5:
             hz = float(input("Digite o valor em Hz: "))
@@ -107,12 +118,14 @@ def unit_conversion():
         else:
             print("Opção inválida.")
 
+# Função principal
 def main():
     while True:
         print("\nEscolha uma opção:")
         print("1 - Calcular propriedades para um valor de n")
         print("2 - Calcular energia e frequência de fóton emitido/absorvido")
-        print("3 - Fazer conversão de unidades")
+        print("3 - Transição com energia ou comprimento de onda do fóton")
+        print("4 - Fazer conversão de unidades")
         print("0 - Sair")
         
         opcao = int(input("Digite a opção: "))
@@ -127,7 +140,21 @@ def main():
             photon_energy(n_inicial, n_final)
         
         elif opcao == 3:
-            unit_conversion()
+            
+            escolha = int(input("Deseja fornecer (1) n inicial ou (2) n final? "))
+            
+            if escolha == 1:
+                n_inicial = int(input("Digite o valor de n inicial: "))
+                f_foton = float(input("Digite a frequência do fóton (Hz) ou comprimento de onda (m): "))
+                transition_with_photon(n_inicial=n_inicial, f_foton=f_foton)
+            
+            elif escolha == 2:
+                n_final = int(input("Digite o valor de n final: "))
+                f_foton = float(input("Digite a frequência do fóton (Hz) ou comprimento de onda (m): "))
+                transition_with_photon(n_final=n_final, f_foton=f_foton)
+        
+        elif opcao == 4:
+            conversor_de_unidades()
         
         elif opcao == 0:
             print("Saindo...")
