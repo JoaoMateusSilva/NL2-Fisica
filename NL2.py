@@ -46,12 +46,15 @@ def calcular_n_com_foton(n_inicial=None, n_final=None, ν_fóton=None, λ_fóton
     E_fóton = h * ν_fóton
 
     if n_inicial is not None:
+        
         E_n_inicial = R_H / n_inicial**2
         E_n_final = E_n_inicial - E_fóton
+        
         if E_n_final <= 0:
             print("Transição impossível com os valores fornecidos.")
             return
         n_final = math.sqrt(R_H / E_n_final)
+        
         print(f"Com base na energia do fóton, o estado final é: {n_final:.2f} (decimal) ou {round(n_final)} (inteiro)")
 
     elif n_final is not None:
@@ -157,7 +160,7 @@ def main():
                 ν_fóton = float(input("Digite a frequência do fóton (Hz) ou comprimento de onda (m): "))
                 λ_fóton = None
                 try:
-                    calcular_n_com_foton_v2(n_inicial=n_inicial, ν_fóton=ν_fóton, λ_fóton=λ_fóton)
+                    calcular_n_com_foton(n_inicial=n_inicial, ν_fóton=ν_fóton, λ_fóton=λ_fóton)
                 except:
                     print("Erro nos valores inseridos.")
             elif escolha == 2:
@@ -165,7 +168,7 @@ def main():
                 ν_fóton = float(input("Digite a frequência do fóton (Hz) ou comprimento de onda (m): "))
                 λ_fóton = None
                 try:
-                    calcular_n_com_foton_v2(n_final=n_final, ν_fóton=ν_fóton, λ_fóton=λ_fóton)
+                    calcular_n_com_foton(n_final=n_final, ν_fóton=ν_fóton, λ_fóton=λ_fóton)
                 except:
                     print("Erro nos valores inseridos.")
         
