@@ -40,11 +40,14 @@ def energia_foton(n_inicial, n_final):
 
 # Função para calcular n_final ou n_inicial dado ν_fóton ou λ_fóton
 def calcular_n_com_foton(n_inicial=None, n_final=None, ν_fóton=None, λ_fóton=None):
+    
     if ν_fóton is not None:
         E_fóton = h * ν_fóton
+    
     elif λ_fóton is not None:
         ν_fóton = c / λ_fóton
         E_fóton = h * ν_fóton
+    
     else:
         print("Você precisa fornecer a frequência (ν_fóton) ou o comprimento de onda (λ_fóton) do fóton.")
         return
@@ -72,31 +75,53 @@ def calcular_n_com_foton(n_inicial=None, n_final=None, ν_fóton=None, λ_fóton
     else:
         print("Você precisa fornecer ou n_inicial ou n_final.")
 
-# Função para calcular a energia de um fóton dado sua frequência ou comprimento de onda
-def calcular_energia_foton(ν_foton=None, λ_foton=None):
-    if ν_foton is not None:
-        E_foton = h * ν_foton
-    elif λ_foton is not None:
-        ν_foton = c / λ_foton
-        E_foton = h * ν_foton
+# Função atualizada para calcular a energia de um fóton, comprimento de onda ou frequência
+def calcular_energia_foton_completa():
+    print("\nEscolha uma das opções para calcular as propriedades do fóton:")
+    print("A. Entrada: frequência ou comprimento de onda do fóton")
+    print("B. Entrada: energia do fóton (J ou eV)")
+
+    escolha = input("\nDigite 'A' ou 'B': ").strip().upper()
+
+    if escolha == 'A':
+        tipo_foton = int(input("Você deseja fornecer (1) frequência ou (2) comprimento de onda? "))
+        
+        if tipo_foton == 1:
+            ν_foton = float(input("Digite a frequência do fóton (Hz): "))
+            E_foton = h * ν_foton  # Energia do fóton em Joules
+            E_foton_ev = E_foton / eV_para_joules  # Conversão para eV
+            print(f"Energia do fóton: {E_foton:.4e} J ou {E_foton_ev:.4e} eV")
+        
+        elif tipo_foton == 2:
+            λ_foton = float(input("Digite o comprimento de onda do fóton (m): "))
+            ν_foton = c / λ_foton  # Frequência do fóton
+            E_foton = h * ν_foton  # Energia do fóton em Joules
+            E_foton_ev = E_foton / eV_para_joules  # Conversão para eV
+            print(f"Energia do fóton: {E_foton:.4e} J ou {E_foton_ev:.4e} eV")
+        else:
+            print("Opção inválida.")
+    
+    elif escolha == 'B':
+        energia_foton = float(input("Digite a energia do fóton (J ou eV): "))
+        unidade = input("A energia está em (J) ou (eV)? ").strip().lower()
+
+        if unidade == 'j':
+            E_foton = energia_foton
+        
+        elif unidade == 'ev':
+            E_foton = energia_foton * eV_para_joules  # Conversão de eV para Joules
+        
+        else:
+            print("Unidade inválida. Use 'J' ou 'eV'.")
+            return
+
+        ν_foton = E_foton / h  # Frequência do fóton
+        λ_foton = c / ν_foton  # Comprimento de onda do fóton
+        print(f"Frequência do fóton: {ν_foton:.4e} Hz")
+        print(f"Comprimento de onda do fóton: {λ_foton:.4e} m")
+    
     else:
-        print("Você precisa fornecer a frequência (ν_foton) ou o comprimento de onda (λ_foton) do fóton.")
-        return
-
-    E_foton_ev = E_foton / eV_para_joules
-    print(f"\nEnergia do fóton: {E_foton:.4e} J ({E_foton_ev:.4e} eV)")
-
-# Função para calcular o comprimento de onda de um fóton dado sua energia
-def calcular_comprimento_onda(E_foton=None, E_foton_ev=None):
-    if E_foton_ev is not None:
-        E_foton = E_foton_ev * eV_para_joules
-
-    if E_foton is not None:
-        ν_foton = E_foton / h
-        λ_foton = c / ν_foton
-        print(f"\nComprimento de onda do fóton: {λ_foton:.4e} m")
-    else:
-        print("Você precisa fornecer a energia do fóton em Joules ou eV.")
+        print("Opção inválida. Escolha 'A' ou 'B'.")
 
 # Função para conversão de unidades (metros para nanômetros, Hz para THz, etc.)
 def conversao_unidades():
@@ -136,86 +161,47 @@ def conversao_unidades():
         else:
             print("Opção inválida.")
 
-# Função principal do programa
-def main():
+# Função principal com o menu atualizado
+def menu_principal():
     while True:
-        print("\nEscolha uma opção:")
-        print("1 - Calcular propriedades do átomo de Bohr para um valor de n")
-        print("2 - Calcular energia e frequência de fóton emitido/absorvido")
+        print("\nEscolha uma das opções abaixo:")
+        print("1 - Atomo de Bohr (Raio, Velocidade, Energia, etc.)")
+        print("2 - Energia do Fóton e Comprimento de Onda (n_inicial, n_final)")
         print("3 - Calcular n_final ou n_inicial com ν_fóton ou λ_fóton")
-        print("4 - Calcular energia do fóton")
-        print("5 - Calcular comprimento de onda do fóton")
-        print("6 - Fazer conversão de unidades")
+        print("4 - Calcular Energia, Frequência ou Comprimento de Onda do Fóton")
+        print("5 - Conversão de Unidades")
         print("0 - Sair")
         
-        opcao = int(input("\nDigite a opção: "))
-        
+        opcao = int(input("\nDigite o número da sua escolha: "))
+
         if opcao == 1:
-            n = int(input("Digite o número quântico n: "))
+            n = int(input("\nDigite o valor de n: "))
             atomo_bohr(n)
         
         elif opcao == 2:
-            n_inicial = int(input("Digite o valor de n inicial: "))
-            n_final = int(input("Digite o valor de n final: "))
+            n_inicial = int(input("Digite o estado inicial (n_inicial): "))
+            n_final = int(input("Digite o estado final (n_final): "))
             energia_foton(n_inicial, n_final)
         
         elif opcao == 3:
-            escolha = int(input("Deseja fornecer (1) n inicial ou (2) n final? "))
-            
-            if escolha == 1:
-                n_inicial = int(input("Digite o valor de n inicial: "))
-                tipo_foton = int(input("Você deseja fornecer (1) frequência ou (2) comprimento de onda? "))
-                
-                if tipo_foton == 1:
-                    ν_foton = float(input("Digite a frequência do fóton (Hz): "))
-                    calcular_n_com_foton(n_inicial=n_inicial, ν_fóton=ν_foton)
-                
-                elif tipo_foton == 2:
-                    λ_foton = float(input("Digite o comprimento de onda do fóton (m): "))
-                    calcular_n_com_foton(n_inicial=n_inicial, λ_fóton=λ_foton)
-            
-            elif escolha == 2:
-                n_final = int(input("Digite o valor de n final: "))
-                tipo_foton = int(input("Você deseja fornecer (1) frequência ou (2) comprimento de onda? "))
-                
-                if tipo_foton == 1:
-                    ν_foton = float(input("Digite a frequência do fóton (Hz): "))
-                    calcular_n_com_foton(n_final=n_final, ν_fóton=ν_foton)
-                
-                elif tipo_foton == 2:
-                    λ_foton = float(input("Digite o comprimento de onda do fóton (m): "))
-                    calcular_n_com_foton(n_final=n_final, λ_fóton=λ_foton)
+            n_inicial = int(input("Digite o estado inicial (n_inicial) ou 0 se não souber: "))
+            n_final = int(input("Digite o estado final (n_final) ou 0 se não souber: "))
+            ν_foton = float(input("Digite a frequência do fóton (Hz) ou 0 se não souber: "))
+            λ_foton = float(input("Digite o comprimento de onda do fóton (m) ou 0 se não souber: "))
+            calcular_n_com_foton(n_inicial if n_inicial != 0 else None, n_final if n_final != 0 else None, ν_foton if ν_foton != 0 else None, λ_foton if λ_foton != 0 else None)
         
         elif opcao == 4:
-            tipo_foton = int(input("Você deseja fornecer (1) frequência ou (2) comprimento de onda? "))
-            
-            if tipo_foton == 1:
-                ν_foton = float(input("Digite a frequência do fóton (Hz): "))
-                calcular_energia_foton(ν_fóton=ν_foton)
-            
-            elif tipo_foton == 2:
-                λ_foton = float(input("Digite o comprimento de onda do fóton (m): "))
-                calcular_energia_foton(λ_fóton=λ_foton)
+            calcular_energia_foton_completa()
         
         elif opcao == 5:
-            energia_foton = float(input("Digite a energia do fóton (J ou eV): "))
-            unidade = input("A energia está em (J) ou (eV)? ")
-            
-            if unidade.lower() == "j":
-                calcular_comprimento_onda(E_fóton=energia_foton)
-            
-            elif unidade.lower() == "ev":
-                calcular_comprimento_onda(E_fóton_ev=energia_foton)
-        
-        elif opcao == 6:
             conversao_unidades()
         
         elif opcao == 0:
-            print("Saindo...")
+            print("Saindo do programa!")
             break
         
         else:
-            print("Opção inválida.")
+            print("Opção inválida! Escolha uma opção válida.")
 
-main()
-
+# Executa o menu principal
+menu_principal()
